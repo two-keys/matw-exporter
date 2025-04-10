@@ -31,19 +31,19 @@ def get_line_type(line):
         ):
         return 'spell name'
 
-    if len(spns) == 2 and (
+    if len(spns) >= 1 and (
             spns[0]['font'] == 'GoudyOldStyleT-Bold' and spns[0]['color'] == 0 and
-            'Practice:' in spns[0]['text']
+            re.search("^Practice:", spns[0]['text'])
         ):
         return 'spell practice'
 
     if len(spns) == 2 and (
             spns[0]['font'] == 'GoudyOldStyleT-Bold' and spns[0]['color'] == 0 and
-            'Primary Factor:' in spns[0]['text']
+            re.search("^Primary (Spell )?Factor:", spns[0]['text'])
         ):
         return 'spell primary factor'
 
-    if len(spns) == 2 and (
+    if len(spns) >= 2 and (
             spns[0]['font'] == 'GoudyOldStyleT-Bold' and spns[0]['color'] == 0 and
             'Suggested Rote Skills:' in spns[0]['text']
         ):
@@ -60,5 +60,26 @@ def get_line_type(line):
         re.search("^Withstand: Hallow Rating", spns[0]['text'])
     ):
         return 'spell withstand'
+
+    if len(spns) == 2 and (
+        spns[0]['font'] == 'GoudyOldStyleT-Bold' and spns[0]['color'] == 0 and
+        re.search("^Cost:", spns[0]['text'])
+    ):
+        return 'spell cost'
+
+    if len(spns) >= 2 and (
+        re.search("^\+[ ]?[0-9] Reach", spns[0]['text'])
+    ):
+        return 'spell reach'
+
+    if len(spns) >= 1 and (
+        (
+            spns[0]['font'] == 'GoudyOldStyleT-Bold' or 
+            spns[0]['font'] == 'GoudyOldStyleT-Regular' 
+        ) and 
+        spns[0]['color'] == 0 and
+        re.search("^Add [a-zA-z]+", spns[0]['text'])
+    ):
+        return 'spell arcanum additions'
 
     return False
