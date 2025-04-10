@@ -1,5 +1,6 @@
 import pymupdf
 import re
+import json
 
 doc = pymupdf.open('/home/toni/Downloads/mage.pdf')
 out = open("outputs/spells.txt", "wb") # create a text output
@@ -47,15 +48,7 @@ def skippable(span):
 
     return is_skippable
 
-arcanum = ''
-found_rank = False
-
-spell_piece_count = 0
-spell_pieces = []
 current_spell = ''
-
-is_reach = False
-is_add = False
 
 spells = {}
 
@@ -71,58 +64,17 @@ for page_num in range(128,192): # iterate the document pages
 
         # print("Handling page %s, block %s (type=%s)" %(page_num, block['number'], block['type']))
         for line in block['lines']:
+            full_text = ''
             for span in line['spans']:
-                span_type = font_map[span['font']] if span['font'] in font_map else span['font']
-                color = span['color']
-                text = span['text']
-                size = span['size']
-
-                if not skippable(span):
-                    console_text = "%s | type(%s), color(%s), size(%s)" %(text, span_type, color, size)
-                    # print(console_text)
-
-                    # note when we found arcanum
-                    if span_type == 'arcanum' and color == 20077:
-                        print("Found arcanum section %s" %(text))
-                        arcanum = text
-                        found_rank = True # we can skip preamble
-
-                    if ((span_type == 'spell' and ('(' in text or ')' in text)) or span_type == 'dots') and color == 20077:
-                        spell_piece_count = spell_piece_count + 1
-                        spell_pieces.append(text)
-                        if spell_piece_count == 3:
-                            # print result
-                            current_spell = ''.join(spell_pieces)
-                            print(current_spell + '\n')
-
-                            # reset spell
-                            spell_piece_count = 0
-                            spell_pieces = []
-
-                    # handle header spans
-                    if span_type == 'misc_heading' and color == 0:
-
-                        is_reach = False
-                        is_add = False
-                        if re.search("^Add [a-zA-z]+$", text):
-                            last_heading = "%s:" %(text)
-                            print(last_heading)
-                            is_add = True
-                        elif re.search("^\+[0-9] Reach$", text): # reach
-                            last_heading = text
-                            print(last_heading)
-                            is_reach = True
-                        else:
-                            last_heading = text
-                            print(last_heading)
-
-                    # handle misc_detail spans
-                    if span_type == 'misc_detail' and color == 0:
-                        last_heading = text
-                        print(last_heading)
-
-                    writeable_text = "%s %s" %(console_text, '\n')
-                    out.write(writeable_text.encode("utf8")) # write text of page
-                    # out.write(bytes((12,))) # write page delimiter (form feed 0x0C)
+                full_text = full_text + span['text']
+            if re.search("^.* \([a-zA-Z]+ •+\)$", full_text): # get spell name
+                if current_spell != '': # dont print on first loop
+                    print(spells[current_spell])
+                    out.write(json.dumps(spells[current_spell]).encode('utf8')) # write text of page
+                    out.write('\n'.encode('utf8')) # write text of page
+                current_spell = full_text
+                spells[current_spell] = { "details": '' }
+            elif current_spell in spells.keys():
+                spells[current_spell]['details'] = spells[current_spell]['details'] + full_text + '\n'
     text = page.get_text('json').encode("utf8") # get plain text (is in UTF-8)
 out.close()
