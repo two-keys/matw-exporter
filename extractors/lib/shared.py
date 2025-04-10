@@ -109,3 +109,10 @@ def get_line_type(line):
     return 'detail'
 
     return False
+
+def text_from_line(line):
+    full_text = ''
+    for span in line['spans']:
+        full_text = full_text + span['text']
+
+    return full_text
