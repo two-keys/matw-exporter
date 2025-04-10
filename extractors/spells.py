@@ -43,17 +43,24 @@ def skippable(span):
 
     return is_skippable
 
+arcanum = ''
+found_rank = False
+
+spell_piece_count = 0
+spell_pieces = []
+current_spell = ''
+
 for page_num in range(128,192): # iterate the document pages
     page = doc[page_num]
     t_page = page.get_textpage()
-    print(page)
+    # print(page)
     # print(t_page.extractDICT())
     for block in t_page.extractDICT()['blocks']:
         # skip images
         if block['type'] == 1:
             continue
 
-        print("Handling page %s, block %s (type=%s)" %(page_num, block['number'], block['type']))
+        # print("Handling page %s, block %s (type=%s)" %(page_num, block['number'], block['type']))
         for line in block['lines']:
             for span in line['spans']:
                 span_type = font_map[span['font']] if span['font'] in font_map else span['font']
@@ -62,7 +69,26 @@ for page_num in range(128,192): # iterate the document pages
 
                 if not skippable(span):
                     console_text = "%s | %s, %s" %(text, span_type, color)
-                    print(console_text)
+                    # print(console_text)
+
+                    # note when we found arcanum
+                    if span_type == 'arcanum' and color == 20077:
+                        print("Found arcanum section %s" %(text))
+                        arcanum = text
+                        found_rank = True # we can skip preamble
+
+                    if ((span_type == 'spell' and ('(' in text or ')' in text)) or span_type == 'dots') and color == 20077:
+                        spell_piece_count = spell_piece_count + 1
+                        spell_pieces.append(text)
+                        if spell_piece_count == 3:
+                            # print result
+                            current_spell = ''.join(spell_pieces)
+                            print(current_spell + '\n')
+
+                            # reset spell
+                            spell_piece_count = 0
+                            spell_pieces = []
+
 
                     writeable_text = "%s %s" %(console_text, '\n')
                     out.write(writeable_text.encode("utf8")) # write text of page
