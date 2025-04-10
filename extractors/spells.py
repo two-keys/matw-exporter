@@ -1,56 +1,34 @@
 import pymupdf
 import re
 import json
+from lib.shared import get_line_type
 
 doc = pymupdf.open('/home/toni/Downloads/mage.pdf')
 out = open("outputs/spells.txt", "wb") # create a text output
 
-font_map = {
-    'VTCGoblinHandBold-SC700': 'page',
-    'VTCGoblinHandBold': 'arcanum',
-    'Arial-Black': 'mage_rank',
-    'FuturaT-Bold': 'sympathy_header',
-    'DeadHistory': 'prose_title',
-    'FuturaT-Book': 'prose',
-    'Lilith-Regular': 'spell',
-    'ArialMT': 'dots',
-    'GoudyOldStyleT-Bold': 'misc_heading',
-    'GoudyOldStyleT-Regular': 'misc_detail',
-    'GoudyOldStyleT-Italic': 'misc_detail' # italics
-}
+def text_from_line(line):
+    full_text = ''
+    for span in line['spans']:
+        full_text = full_text + span['text']
 
-def skippable(span):
-    # initialize variables
-    span_type = font_map[span['font']] if span['font'] in font_map else span['font']
-    color = span['color']
-    text = span['text']
+    return full_text
 
-    is_skippable = False
+class Spell:
+    name = ''
 
-    # page number
-    is_skippable = True if color == 4094872 and span_type == 'page' else is_skippable
-    # page arcanum footer
-    is_skippable = True if color == 4094872 and span_type == 'arcanum' else is_skippable
+    def __init__(self, name_line):
+        self.name = text_from_line(name_line)
 
-    # colon for Add <Arcanum>
-    is_skippable = True if (':' in text and span_type == 'misc_heading') else is_skippable
+    def write_to_file(self, out):
+        out.write(self.name.encode('utf8'))
+        out.write('\n'.encode('utf8'))
+        
 
-    # chapter title
-    is_skippable = True if color == 23931 and span_type == 'arcanum' else is_skippable
+current_spell = -1
+spells = []
 
-    # blue text boxes titles
-    is_skippable = True if color == 20077 and span_type == 'prose_title' else is_skippable
-
-    # blue text boxes content
-    is_skippable = True if color == 20077 and span_type == 'prose' else is_skippable
-
-    # 
-
-    return is_skippable
-
-current_spell = ''
-
-spells = {}
+found_arcanum = False
+found_mage_rank = False
 
 for page_num in range(128,192): # iterate the document pages
     page = doc[page_num]
@@ -64,17 +42,15 @@ for page_num in range(128,192): # iterate the document pages
 
         # print("Handling page %s, block %s (type=%s)" %(page_num, block['number'], block['type']))
         for line in block['lines']:
-            full_text = ''
-            for span in line['spans']:
-                full_text = full_text + span['text']
-            if re.search("^.* \([a-zA-Z]+ •+\)$", full_text): # get spell name
-                if current_spell != '': # dont print on first loop
-                    print(spells[current_spell])
-                    out.write(json.dumps(spells[current_spell]).encode('utf8')) # write text of page
-                    out.write('\n'.encode('utf8')) # write text of page
-                current_spell = full_text
-                spells[current_spell] = { "details": '' }
-            elif current_spell in spells.keys():
-                spells[current_spell]['details'] = spells[current_spell]['details'] + full_text + '\n'
-    text = page.get_text('json').encode("utf8") # get plain text (is in UTF-8)
+
+            line_type = get_line_type(line)
+            if line_type != False:
+
+
+                if line_type == 'spell name':
+                    current_spell = current_spell + 1
+                    spells.append(Spell(line))
+for spell_inst in spells:
+    spell_inst.write_to_file(out)
+
 out.close()
