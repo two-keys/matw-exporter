@@ -1,7 +1,7 @@
 import pymupdf
 
 doc = pymupdf.open('/home/toni/Downloads/mage.pdf')
-out = open("outputs/mage_merits.txt", "wb") # create a text output
+out = open("outputs/spells.txt", "wb") # create a text output
 
 font_map = {
     'VTCGoblinHandBold-SC700': 'page',
