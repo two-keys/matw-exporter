@@ -18,18 +18,13 @@ for page_num in range(128,192): # iterate the document pages
 
         # print("Handling page %s, block %s (type=%s)" %(page_num, block['number'], block['type']))
         for line in block['lines']:
-            out.write('line'.encode('utf8'))
-            out.write('\n'.encode('utf8'))
-
             line_type = get_line_type(line)
-            if line_type != False:
+            debug_line = "line | %s \n" %(line_type)
+            out.write(debug_line.encode('utf8'))
+
+            for span in line['spans']:
                 out.write('\t'.encode('utf8'))
-                out.write(line_type.encode('utf8'))
+                out.write(json.dumps(span).encode('utf8'))
                 out.write('\n'.encode('utf8')) # write text of page
-            else: # debuggin fallback
-                for span in line['spans']:
-                    out.write('\t'.encode('utf8'))
-                    out.write(json.dumps(span).encode('utf8'))
-                    out.write('\n'.encode('utf8')) # write text of page
     text = page.get_text('json').encode("utf8") # get plain text (is in UTF-8)
 out.close()
