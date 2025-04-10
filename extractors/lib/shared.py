@@ -1,3 +1,5 @@
+import re
+
 def get_line_type(line):
     spns = line['spans']
 
@@ -19,11 +21,44 @@ def get_line_type(line):
     if len(spns) == 1 and spns[0]['size'] == 33.0:
         return 'large arcanum'
 
+    if len(spns) == 2 and spns[0]['text'] == 'Purview:':
+        return 'arcanum purview'
+
     if len(spns) == 3 and (
             spns[0]['font'] == 'Lilith-Regular' and spns[0]['color'] == 20077 and
             spns[1]['font'] == 'ArialMT' and '\u2022' in spns[1]['text'] and spns[1]['color'] == 20077 and
             spns[2]['font'] == 'Lilith-Regular' and spns[2]['color'] == 20077
         ):
         return 'spell name'
+
+    if len(spns) == 2 and (
+            spns[0]['font'] == 'GoudyOldStyleT-Bold' and spns[0]['color'] == 0 and
+            'Practice:' in spns[0]['text']
+        ):
+        return 'spell practice'
+
+    if len(spns) == 2 and (
+            spns[0]['font'] == 'GoudyOldStyleT-Bold' and spns[0]['color'] == 0 and
+            'Primary Factor:' in spns[0]['text']
+        ):
+        return 'spell primary factor'
+
+    if len(spns) == 2 and (
+            spns[0]['font'] == 'GoudyOldStyleT-Bold' and spns[0]['color'] == 0 and
+            'Suggested Rote Skills:' in spns[0]['text']
+        ):
+        return 'spell rote skills'
+
+    if len(spns) == 2 and (
+            spns[0]['font'] == 'GoudyOldStyleT-Bold' and spns[0]['color'] == 0 and
+            'Withstand:' in spns[0]['text']
+        ):
+        return 'spell withstand'
+
+    if len(spns) == 1 and (
+        spns[0]['font'] == 'GoudyOldStyleT-Regular' and spns[0]['color'] == 0 and
+        re.search("^Withstand: Hallow Rating", spns[0]['text'])
+    ):
+        return 'spell withstand'
 
     return False
