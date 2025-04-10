@@ -24,10 +24,28 @@ def get_line_type(line):
     if len(spns) == 2 and spns[0]['text'] == 'Purview:':
         return 'arcanum purview'
 
+    if len(spns) == 1 and (
+            spns[0]['font'] == 'Lilith-Regular' and spns[0]['size'] == 19.0
+            and spns[0]['color'] == 20077
+        ) or (
+            spns[0]['font'] == 'DeadHistory' and spns[0]['size'] == 14.0
+        ):
+        return 'blurb title'
+
+    if len(spns) == 1 and (
+            spns[0]['font'] == 'FuturaT-Bold' and spns[0]['size'] == 9.899495124816895
+            and spns[0]['color'] == 20077
+        ) or (
+            spns[0]['font'] == 'FuturaT-Book' and (spns[0]['size'] in [11.0, 9.899495124816895])
+            and spns[0]['color'] == 20077
+        ):
+        return 'blurb misc'
+
     if len(spns) == 3 and (
-            spns[0]['font'] == 'Lilith-Regular' and spns[0]['color'] == 20077 and
-            spns[1]['font'] == 'ArialMT' and '\u2022' in spns[1]['text'] and spns[1]['color'] == 20077 and
-            spns[2]['font'] == 'Lilith-Regular' and spns[2]['color'] == 20077
+            spns[0]['font'] == 'Lilith-Regular' and spns[0]['color'] in [20077, 16734] and
+            spns[1]['font'] in ['ArialMT', 'Arial-Black'] and '\u2022' in spns[1]['text']
+                and spns[1]['color'] in [20077, 16734] and
+            spns[2]['font'] == 'Lilith-Regular' and spns[2]['color'] in [20077, 16734]
         ):
         return 'spell name'
 
@@ -81,5 +99,13 @@ def get_line_type(line):
         re.search("^Add [a-zA-z]+", spns[0]['text'])
     ):
         return 'spell arcanum additions'
+
+    if len(spns) >= 1 and (
+        spns[0]['font'] == 'GoudyOldStyleT-Regular'
+        and spns[0]['size'] == 10.0 and spns[0]['color'] == 0
+    ):
+        return 'detail'
+
+    return 'detail'
 
     return False
