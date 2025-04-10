@@ -1,3 +1,4 @@
 pymupdf-venv
 outputs
 *.scratch.py
+__pycache__
