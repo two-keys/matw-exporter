@@ -1,4 +1,5 @@
 import pymupdf
+import re
 
 doc = pymupdf.open('/home/toni/Downloads/mage.pdf')
 out = open("outputs/spells.txt", "wb") # create a text output
@@ -30,6 +31,9 @@ def skippable(span):
     # page arcanum footer
     is_skippable = True if color == 4094872 and span_type == 'arcanum' else is_skippable
 
+    # colon for Add <Arcanum>
+    is_skippable = True if (':' in text and span_type == 'misc_heading') else is_skippable
+
     # chapter title
     is_skippable = True if color == 23931 and span_type == 'arcanum' else is_skippable
 
@@ -50,6 +54,11 @@ spell_piece_count = 0
 spell_pieces = []
 current_spell = ''
 
+is_reach = False
+is_add = False
+
+spells = {}
+
 for page_num in range(128,192): # iterate the document pages
     page = doc[page_num]
     t_page = page.get_textpage()
@@ -66,9 +75,10 @@ for page_num in range(128,192): # iterate the document pages
                 span_type = font_map[span['font']] if span['font'] in font_map else span['font']
                 color = span['color']
                 text = span['text']
+                size = span['size']
 
                 if not skippable(span):
-                    console_text = "%s | %s, %s" %(text, span_type, color)
+                    console_text = "%s | type(%s), color(%s), size(%s)" %(text, span_type, color, size)
                     # print(console_text)
 
                     # note when we found arcanum
@@ -89,6 +99,27 @@ for page_num in range(128,192): # iterate the document pages
                             spell_piece_count = 0
                             spell_pieces = []
 
+                    # handle header spans
+                    if span_type == 'misc_heading' and color == 0:
+
+                        is_reach = False
+                        is_add = False
+                        if re.search("^Add [a-zA-z]+$", text):
+                            last_heading = "%s:" %(text)
+                            print(last_heading)
+                            is_add = True
+                        elif re.search("^\+[0-9] Reach$", text): # reach
+                            last_heading = text
+                            print(last_heading)
+                            is_reach = True
+                        else:
+                            last_heading = text
+                            print(last_heading)
+
+                    # handle misc_detail spans
+                    if span_type == 'misc_detail' and color == 0:
+                        last_heading = text
+                        print(last_heading)
 
                     writeable_text = "%s %s" %(console_text, '\n')
                     out.write(writeable_text.encode("utf8")) # write text of page
