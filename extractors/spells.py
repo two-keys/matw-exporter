@@ -27,12 +27,14 @@ for page_num in range(128,192): # iterate the document pages
         for line in block['lines']:
 
             line_type = get_line_type(line)
-            if line_type != False:
-
-
-                if line_type == 'spell name':
-                    current_spell = current_spell + 1
-                    spells.append(Spell(line))
+            # initialize 
+            if line_type == 'spell name':
+                current_spell = current_spell + 1
+                spells.append(Spell())
+            
+            # offload handling to Spell class
+            if len(spells) > 0:
+                spells[current_spell].handle_line(line)
 for spell_inst in spells:
     spell_inst.write_to_file(out)
 
