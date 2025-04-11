@@ -3,7 +3,7 @@ import re
 import json
 from lib.shared import get_line_type
 
-doc = pymupdf.open('/home/toni/Downloads/mage.pdf')
+doc = pymupdf.open('/home/toni/Code/repositories/Mage/pdf/mage.pdf')
 out = open("outputs/spells.txt", "wb") # create a text output
 
 for page_num in range(128,192): # iterate the document pages
