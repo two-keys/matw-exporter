@@ -4,7 +4,7 @@ import json
 from lib.shared import get_line_type, text_from_line
 from lib.spell import Spell
 
-doc = pymupdf.open('/home/toni/Code/repositories/Mage/pdf/mage.pdf')
+doc = pymupdf.open('pdf/mage.pdf')
 out = open("outputs/spells.txt", "wb") # create a text output
 
 current_spell = -1
