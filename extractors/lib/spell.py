@@ -9,10 +9,10 @@ class Spell:
     rote_skills = ''
     detail = ''
     arcanum_adds = ''
-    reach_mods = ''
 
     def __init__(self, name_line):
         self.name = text_from_line(name_line)
+        self.reach_mods = [] # instantiate here as instance variable
 
     def handle_line(self, line):
         line_type = get_line_type(line)
@@ -38,20 +38,22 @@ class Spell:
                 self.rote_skills = line_text
 
             case 'detail':
-                if self.arcanum_adds == '' and self.reach_mods == '':
+                if self.arcanum_adds == '' and len(self.reach_mods) == 0:
                     self.detail = self.detail + line_text
-                elif self.reach_mods == '':
+                elif len(self.reach_mods) == 0:
                     self.arcanum_adds = self.arcanum_adds + line_text
                 else:
-                    self.reach_mods = self.reach_mods + line_text
+                    self.reach_mods[-1] = self.reach_mods[-1] + line_text
 
             case 'spell arcanum additions':
                 self.arcanum_adds = line_text
 
             case 'spell reach':
-                self.reach_mods = self.reach_mods + line_text
+                self.reach_mods.append(line_text)
 
     def write_to_file(self, out):
+        write_headers_to_file(out)
+
         print(self.name)
         out.write(self.name.encode('utf8'))
         out.write(','.encode('utf8'))
@@ -85,6 +87,7 @@ class Spell:
         out.write(','.encode('utf8'))
 
         print("%s%s" %(tab(1), self.reach_mods))
-        out.write(self.reach_mods.encode('utf8'))
+        for r_mod in self.reach_mods:
+            out.write(r_mod.encode('utf8'))
 
         out.write('\n'.encode('utf8'))
