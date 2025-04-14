@@ -7,6 +7,9 @@ class Spell:
     spell_cost = '0'
     withstand = ''
     rote_skills = ''
+    detail = ''
+    arcanum_adds = ''
+    reach_mods = ''
 
     def __init__(self, name_line):
         self.name = text_from_line(name_line)
@@ -34,6 +37,20 @@ class Spell:
             case 'spell rote skills':
                 self.rote_skills = line_text
 
+            case 'detail':
+                if self.arcanum_adds == '' and self.reach_mods == '':
+                    self.detail = self.detail + line_text
+                elif self.reach_mods == '':
+                    self.arcanum_adds = self.arcanum_adds + line_text
+                else:
+                    self.reach_mods = self.reach_mods + line_text
+
+            case 'spell arcanum additions':
+                self.arcanum_adds = line_text
+
+            case 'spell reach':
+                self.reach_mods = self.reach_mods + line_text
+
     def write_to_file(self, out):
         print(self.name)
         out.write(self.name.encode('utf8'))
@@ -57,5 +74,17 @@ class Spell:
 
         print("%s%s" %(tab(1), self.rote_skills))
         out.write(self.rote_skills.encode('utf8'))
+        out.write(','.encode('utf8'))
+
+        print("%s%s" %(tab(1), self.detail))
+        out.write(self.detail.encode('utf8'))
+        out.write(','.encode('utf8'))
+
+        print("%s%s" %(tab(1), self.arcanum_adds))
+        out.write(self.arcanum_adds.encode('utf8'))
+        out.write(','.encode('utf8'))
+
+        print("%s%s" %(tab(1), self.reach_mods))
+        out.write(self.reach_mods.encode('utf8'))
 
         out.write('\n'.encode('utf8'))
