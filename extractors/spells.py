@@ -32,7 +32,7 @@ for page_num in range(128,192): # iterate the document pages
                     # initialize 
                     current_spell = current_spell + 1
                     spells.append(Spell(line))
-                    print(text_from_line(line))
+                    # print(text_from_line(line))
                 case 'large arcanum':
                     found_arcanum = True
                     found_mage_rank = False

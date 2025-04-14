@@ -1,4 +1,4 @@
-from lib.shared import get_line_type, text_from_line
+from lib.shared import get_line_type, text_from_line, tab
 
 class Spell:
     name = ''
@@ -15,5 +15,8 @@ class Spell:
                 self.name = line_text
 
     def write_to_file(self, out):
+        print(self.name)
         out.write(self.name.encode('utf8'))
         out.write('\n'.encode('utf8'))
+        
+        print("%stest" %(tab(1)))

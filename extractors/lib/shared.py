@@ -116,3 +116,9 @@ def text_from_line(line):
         full_text = full_text + span['text']
 
     return full_text
+
+def tab(count):
+    tabs = ''
+    for i in range(count):
+        tabs = tabs + '\t'
+    return tabs
