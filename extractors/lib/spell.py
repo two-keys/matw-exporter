@@ -13,6 +13,8 @@ class Spell:
     detail = ''
     arcanum_adds = ''
 
+    seeking = False
+
     def __init__(self, name_line):
         pattern = r"[ ]*(.*) \(([a-zA-z]+) (•+)\)"
         line_text = text_from_line(name_line)
@@ -53,14 +55,26 @@ class Spell:
                 if self.rote_skills == '':
                     self.withstand = self.withstand + line_text
                 elif self.arcanum_adds == '' and len(self.reach_mods) == 0:
-                    self.detail = self.detail + line_text
+                    if re.match(r'^(•+.*$)', line_text):
+                        real_text = re.sub(r'^(•+.*$)', r'<p>\1', line_text)
+                        self.seeking = True
+                        self.detail = self.detail + real_text
+                    elif re.match(r'^([a-zA-Z]+:.*$)', line_text):
+                        real_text = re.sub(r'^([a-zA-Z]+:.*$)', r'<p>\1', line_text)
+                        self.seeking = True
+                        self.detail = self.detail + real_text
+                    else:
+                        self.detail = self.detail + line_text
+                        if self.seeking == True:
+                            self.seeking = False
+                            self.detail = self.detail + '</p>'
                 elif len(self.reach_mods) == 0:
                     self.arcanum_adds = self.arcanum_adds + line_text
                 else:
                     self.reach_mods[-1] = self.reach_mods[-1] + line_text
 
             case 'spell arcanum additions':
-                self.arcanum_adds = line_text
+                self.arcanum_adds = self.arcanum_adds + '<p>' + line_text
 
             case 'spell reach':
                 self.reach_mods.append(line_text)
@@ -86,19 +100,19 @@ class Spell:
         print("%s%s" %(tab(1), self.withstand))
         data['Withstand'] = self.withstand
 
+        print("%s%s" %(tab(1), self.rote_skills))
         print("%s%s" %(tab(1), self.detail))
-        data['Description'] = self.detail
+        data['Description'] = "<p>%s</p>"%(self.rote_skills)
+        data['Description'] = data['Description'] + self.detail
+
+        print("%s%s" %(tab(1), self.arcanum_adds))
+        data['Description'] = data['Description'] + self.arcanum_adds
+        
+        print("%s%s" %(tab(1), self.reach_mods))
+        for reach_mod in self.reach_mods:
+            data['Description'] = data['Description'] + '<p>' + reach_mod
 
         # print("%s%s" %(tab(1), self.spell_cost))
         # data['Spell Cost'] = self.spell_cost
-
-        # print("%s%s" %(tab(1), self.rote_skills))
-        # data['Rote Skills'] = self.rote_skills
-
-        # print("%s%s" %(tab(1), self.arcanum_adds))
-        # data['Arcanum Adds'] = self.arcanum_adds
-
-        # print("%s%s" %(tab(1), self.reach_mods))
-        # data['Reach Mods'] = '\n'.join(self.reach_mods)
 
         out.writerow(data)

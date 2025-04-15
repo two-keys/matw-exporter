@@ -96,7 +96,7 @@ def get_line_type(line):
             spns[0]['font'] == 'GoudyOldStyleT-Regular' 
         ) and 
         spns[0]['color'] == 0 and
-        re.search("^Add [a-zA-z]+", spns[0]['text'])
+        re.search("^Add \w+", spns[0]['text'])
     ):
         return 'spell arcanum additions'
 
