@@ -1,7 +1,10 @@
 from lib.shared import get_line_type, text_from_line, tab
+import re
 
 class Spell:
     name = ''
+    dots = 1
+    arcanum = ''
     practice = ''
     p_factor = ''
     spell_cost = '0'
@@ -11,7 +14,13 @@ class Spell:
     arcanum_adds = ''
 
     def __init__(self, name_line):
-        self.name = text_from_line(name_line)
+        pattern = r"[ ]*([a-zA-Z]+[a-zA-Z ]*) \(([a-zA-z]+) (•+)\)"
+        line_text = text_from_line(name_line)
+        match = re.search(pattern, line_text)
+        self.name = match.group(1)
+        self.arcanum = match.group(2)
+        self.dots = match.group(3)
+
         self.reach_mods = [] # instantiate here as instance variable
 
     def handle_line(self, line):
@@ -19,9 +28,6 @@ class Spell:
         line_text = text_from_line(line)
 
         match line_type:
-            case 'spell name':
-                self.name = line_text
-
             case 'spell practice':
                 self.practice = line_text
 
@@ -54,8 +60,14 @@ class Spell:
     def write_to_file(self, out):
         data = {}
 
-        print(self.name)
+        print("%s %s" %(self.name, self.dots))
         data['Name'] = self.name
+        data['Dots'] = len(self.dots)
+
+        data['Image'] = "systems/mta/icons/placeholders/%s.svg" %(self.arcanum)
+
+        print("%s%s" %(tab(1), self.arcanum))
+        data['Arcanum'] = self.arcanum
         
         print("%s%s" %(tab(1), self.practice))
         data['Practice'] = self.practice
@@ -63,22 +75,22 @@ class Spell:
         print("%s%s" %(tab(1), self.p_factor))
         data['Primary Factor'] = self.p_factor
 
-        print("%s%s" %(tab(1), self.spell_cost))
-        data['Spell Cost'] = self.spell_cost
-
         print("%s%s" %(tab(1), self.withstand))
         data['Withstand'] = self.withstand
 
-        print("%s%s" %(tab(1), self.rote_skills))
-        data['Rote Skills'] = self.rote_skills
-
         print("%s%s" %(tab(1), self.detail))
-        data['Detail'] = self.detail
+        data['Description'] = self.detail
 
-        print("%s%s" %(tab(1), self.arcanum_adds))
-        data['Arcanum Adds'] = self.arcanum_adds
+        # print("%s%s" %(tab(1), self.spell_cost))
+        # data['Spell Cost'] = self.spell_cost
 
-        print("%s%s" %(tab(1), self.reach_mods))
-        data['Reach Mods'] = '\n'.join(self.reach_mods)
+        # print("%s%s" %(tab(1), self.rote_skills))
+        # data['Rote Skills'] = self.rote_skills
+
+        # print("%s%s" %(tab(1), self.arcanum_adds))
+        # data['Arcanum Adds'] = self.arcanum_adds
+
+        # print("%s%s" %(tab(1), self.reach_mods))
+        # data['Reach Mods'] = '\n'.join(self.reach_mods)
 
         out.writerow(data)

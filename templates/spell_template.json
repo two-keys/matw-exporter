@@ -1,0 +1,15 @@
+{
+  "name": "{{Name}}",
+  "type": "spell",
+  "img": "{{Image}}",
+  "system": {
+  	"arcanum": "{{Arcanum}}",
+  	"practice": "{{Practice}}",
+  	"primaryFactor": "{{Primary Factor}}",
+  	"withstand": "{{Withstand}}",
+  	"level": {{Dots}},
+  	"description": "{{Description}}",
+  	"label": "Spell"
+  },
+  "folder": null
+}

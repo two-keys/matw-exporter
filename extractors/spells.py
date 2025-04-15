@@ -8,7 +8,7 @@ import csv
 doc = pymupdf.open('pdf/mage.pdf')
 out = open("outputs/spells.csv", "w") # create a text output
 
-fieldnames = ['Name','Practice','Primary Factor','Spell Cost','Withstand','Rote Skills','Detail','Arcanum Adds','Reach Mods']
+fieldnames = ['Name','Dots','Image','Arcanum','Practice','Primary Factor','Withstand','Description']
 writer = csv.DictWriter(out, fieldnames = fieldnames, quoting=csv.QUOTE_ALL)
 
 current_spell = -1
