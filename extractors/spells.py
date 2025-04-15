@@ -3,9 +3,13 @@ import re
 import json
 from lib.shared import get_line_type, text_from_line
 from lib.spell import Spell
+import csv
 
 doc = pymupdf.open('pdf/mage.pdf')
-out = open("outputs/spells.txt", "wb") # create a text output
+out = open("outputs/spells.csv", "w") # create a text output
+
+fieldnames = ['Name','Practice','Primary Factor','Spell Cost','Withstand','Rote Skills','Detail','Arcanum Adds','Reach Mods']
+writer = csv.DictWriter(out, fieldnames = fieldnames)
 
 current_spell = -1
 spells = []
@@ -46,7 +50,10 @@ for page_num in range(128,192): # iterate the document pages
                     if found_mage_rank:
                         # offload handling to Spell class
                         spells[current_spell].handle_line(line)
+
+writer.writeheader()
+
 for spell_inst in spells:
-    spell_inst.write_to_file(out)
+    spell_inst.write_to_file(writer)
 
 out.close()

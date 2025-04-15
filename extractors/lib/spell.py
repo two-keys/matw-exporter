@@ -52,42 +52,33 @@ class Spell:
                 self.reach_mods.append(line_text)
 
     def write_to_file(self, out):
-        write_headers_to_file(out)
+        data = {}
 
         print(self.name)
-        out.write(self.name.encode('utf8'))
-        out.write(','.encode('utf8'))
+        data['Name'] = self.name
         
         print("%s%s" %(tab(1), self.practice))
-        out.write(self.practice.encode('utf8'))
-        out.write(','.encode('utf8'))
+        data['Practice'] = self.practice
 
         print("%s%s" %(tab(1), self.p_factor))
-        out.write(self.p_factor.encode('utf8'))
-        out.write(','.encode('utf8'))
+        data['Primary Factor'] = self.p_factor
 
         print("%s%s" %(tab(1), self.spell_cost))
-        out.write(self.spell_cost.encode('utf8'))
-        out.write(','.encode('utf8'))
+        data['Spell Cost'] = self.spell_cost
 
         print("%s%s" %(tab(1), self.withstand))
-        out.write(self.withstand.encode('utf8'))
-        out.write(','.encode('utf8'))
+        data['Withstand'] = self.withstand
 
         print("%s%s" %(tab(1), self.rote_skills))
-        out.write(self.rote_skills.encode('utf8'))
-        out.write(','.encode('utf8'))
+        data['Rote Skills'] = self.rote_skills
 
         print("%s%s" %(tab(1), self.detail))
-        out.write(self.detail.encode('utf8'))
-        out.write(','.encode('utf8'))
+        data['Detail'] = self.detail
 
         print("%s%s" %(tab(1), self.arcanum_adds))
-        out.write(self.arcanum_adds.encode('utf8'))
-        out.write(','.encode('utf8'))
+        data['Arcanum Adds'] = self.arcanum_adds
 
         print("%s%s" %(tab(1), self.reach_mods))
-        for r_mod in self.reach_mods:
-            out.write(r_mod.encode('utf8'))
+        data['Reach Mods'] = '\n'.join(self.reach_mods)
 
-        out.write('\n'.encode('utf8'))
+        out.writerow(data)
