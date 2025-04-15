@@ -14,7 +14,7 @@ class Spell:
     arcanum_adds = ''
 
     def __init__(self, name_line):
-        pattern = r"[ ]*([a-zA-Z]+[a-zA-Z ]*) \(([a-zA-z]+) (•+)\)"
+        pattern = r"[ ]*(.*) \(([a-zA-z]+) (•+)\)"
         line_text = text_from_line(name_line)
         match = re.search(pattern, line_text)
         self.name = match.group(1)
