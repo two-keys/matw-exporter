@@ -42,9 +42,9 @@ class Spell:
                 self.spell_cost = line_text
 
             case 'spell withstand':
-                pattern = r"([a-zA-Z]+)$"
+                pattern = r"Withstand: (.*)$"
                 match = re.search(pattern, line_text)
-                self.withstand = line_text
+                self.withstand = match.group(1)
 
             case 'spell rote skills':
                 self.rote_skills = line_text
