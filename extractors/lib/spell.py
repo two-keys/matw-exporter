@@ -29,7 +29,9 @@ class Spell:
 
         match line_type:
             case 'spell practice':
-                self.practice = line_text
+                pattern = r"([a-zA-Z]+)$"
+                match = re.search(pattern, line_text)
+                self.practice = match.group(1)
 
             case 'spell primary factor':
                 pattern = r"([a-zA-Z]+)$"
