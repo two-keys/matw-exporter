@@ -32,7 +32,9 @@ class Spell:
                 self.practice = line_text
 
             case 'spell primary factor':
-                self.p_factor = line_text
+                pattern = r"([a-zA-Z]+)$"
+                match = re.search(pattern, line_text)
+                self.p_factor = match.group(1)
 
             case 'spell cost':
                 self.spell_cost = line_text
@@ -67,7 +69,7 @@ class Spell:
         data['Image'] = "systems/mta/icons/placeholders/%s.svg" %(self.arcanum)
 
         print("%s%s" %(tab(1), self.arcanum))
-        data['Arcanum'] = self.arcanum
+        data['Arcanum'] = self.arcanum.lower()
         
         print("%s%s" %(tab(1), self.practice))
         data['Practice'] = self.practice
