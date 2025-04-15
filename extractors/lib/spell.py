@@ -42,13 +42,17 @@ class Spell:
                 self.spell_cost = line_text
 
             case 'spell withstand':
+                pattern = r"([a-zA-Z]+)$"
+                match = re.search(pattern, line_text)
                 self.withstand = line_text
 
             case 'spell rote skills':
                 self.rote_skills = line_text
 
             case 'detail':
-                if self.arcanum_adds == '' and len(self.reach_mods) == 0:
+                if self.rote_skills == '':
+                    self.withstand = self.withstand + line_text
+                elif self.arcanum_adds == '' and len(self.reach_mods) == 0:
                     self.detail = self.detail + line_text
                 elif len(self.reach_mods) == 0:
                     self.arcanum_adds = self.arcanum_adds + line_text
