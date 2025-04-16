@@ -6,10 +6,6 @@ from lib.spell import Spell
 import csv
 
 doc = pymupdf.open('pdf/mage.pdf')
-out = open("outputs/spells.csv", "w") # create a text output
-
-fieldnames = ['Name','Dots','Image','Arcanum','Practice','Primary Factor','Withstand','Description']
-writer = csv.DictWriter(out, fieldnames = fieldnames, quoting=csv.QUOTE_ALL)
 
 current_spell = -1
 spells = []
@@ -51,9 +47,17 @@ for page_num in range(128,192): # iterate the document pages
                         # offload handling to Spell class
                         spells[current_spell].handle_line(line)
 
-writer.writeheader()
 
-for spell_inst in spells:
-    spell_inst.write_to_file(writer)
+all_arcanum = ['death', 'matter', 'life', 'spirit', 'mind', 'space', 'fate', 'time', 'forces', 'prime']
+for arcanum in all_arcanum:
+    out = open("outputs/%s_spells.csv" %(arcanum), "w") # create a text output
 
-out.close()
+    fieldnames = ['Name','Dots','Image','Arcanum','Practice','Primary Factor','Withstand','Description']
+    writer = csv.DictWriter(out, fieldnames = fieldnames, quoting=csv.QUOTE_ALL)
+    writer.writeheader()
+
+    for spell_inst in spells:
+        if spell_inst.arcanum.lower() == arcanum:
+            spell_inst.write_to_file(writer)
+
+    out.close()

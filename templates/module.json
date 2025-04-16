@@ -1,0 +1,156 @@
+{
+  "id": "mage-spells",
+  "title": "Mage Spells",
+  "description": "Sharing data across worlds",
+  "authors": [
+    {
+      "name": "Keys",
+      "flags": {}
+    }
+  ],
+  "version": "1.0.4",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12"
+  },
+  "packs": [
+    {
+      "name": "death-spells",
+      "label": "Death",
+      "path": "packs/death-spells",
+      "type": "Item",
+      "system": "mta",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "fate-spells",
+      "label": "Fate",
+      "path": "packs/fate-spells",
+      "type": "Item",
+      "system": "mta",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "forces-spells",
+      "label": "Forces",
+      "path": "packs/forces-spells",
+      "type": "Item",
+      "system": "mta",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "life-spells",
+      "label": "Life",
+      "path": "packs/life-spells",
+      "type": "Item",
+      "system": "mta",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "matter-spells",
+      "label": "Matter",
+      "path": "packs/matter-spells",
+      "type": "Item",
+      "system": "mta",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "mind-spells",
+      "label": "Mind",
+      "path": "packs/mind-spells",
+      "type": "Item",
+      "system": "mta",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "prime-spells",
+      "label": "Prime",
+      "path": "packs/prime-spells",
+      "type": "Item",
+      "system": "mta",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "space-spells",
+      "label": "Space",
+      "path": "packs/space-spells",
+      "type": "Item",
+      "system": "mta",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "spirit-spells",
+      "label": "Spirit",
+      "path": "packs/spirit-spells",
+      "type": "Item",
+      "system": "mta",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "time-spells",
+      "label": "Time",
+      "path": "packs/time-spells",
+      "type": "Item",
+      "system": "mta",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "MtaW Spells",
+      "color": "#FFC0CB",
+      "packs": [
+        "death-spells",
+        "fate-spells",
+        "forces-spells",
+        "life-spells",
+        "matter-spells",
+        "mind-spells",
+        "prime-spells",
+        "space-spells",
+        "spirit-spells",
+        "time-spells"
+      ]
+    }
+  ]
+}

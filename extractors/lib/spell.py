@@ -83,7 +83,7 @@ class Spell:
         data = {}
 
         print("%s %s" %(self.name, self.dots))
-        data['Name'] = self.name
+        data['Name'] = "%s %s" %(self.name, self.dots)
         data['Dots'] = len(self.dots)
 
         data['Image'] = "systems/mta/icons/placeholders/%s.svg" %(self.arcanum)
