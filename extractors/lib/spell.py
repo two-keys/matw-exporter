@@ -13,7 +13,9 @@ class Spell:
     detail = ''
     arcanum_adds = ''
 
+    # for detail section only
     seeking = False
+    last_line_was = ''
 
     def __init__(self, name_line):
         pattern = r"[ ]*(.*) \(([a-zA-z]+) (•+)\)"
@@ -52,14 +54,19 @@ class Spell:
                 self.rote_skills = line_text
 
             case 'detail':
-                if self.rote_skills == '':
+                if self.rote_skills == '': # Suggested Rote Skills
                     self.withstand = self.withstand + line_text
                 elif self.arcanum_adds == '' and len(self.reach_mods) == 0:
+                    # didn't find either, so we're handling misc details
+
                     if re.match(r'^(•+.*$)', line_text):
                         real_text = re.sub(r'^(•+.*$)', r'<p>\1', line_text)
                         self.seeking = True
                         self.detail = self.detail + real_text
                     elif re.match(r'^([a-zA-Z]+:.*$)', line_text):
+                        # misc detail line
+                        # claws: the user can give themselves claws
+
                         real_text = re.sub(r'^([a-zA-Z]+:.*$)', r'<p>\1', line_text)
                         self.seeking = True
                         self.detail = self.detail + real_text
@@ -68,16 +75,20 @@ class Spell:
                         if self.seeking == True:
                             self.seeking = False
                             self.detail = self.detail + '</p>'
-                elif len(self.reach_mods) == 0:
-                    self.arcanum_adds = self.arcanum_adds + line_text
                 else:
-                    self.reach_mods[-1] = self.reach_mods[-1] + line_text
+                    match self.last_line_was:
+                        case 'arcanum_add':
+                            self.arcanum_adds = self.arcanum_adds + line_text
+                        case 'spell_reach':
+                            self.reach_mods[-1] = self.reach_mods[-1] + line_text
 
             case 'spell arcanum additions':
                 self.arcanum_adds = self.arcanum_adds + '<p>' + line_text
+                self.last_line_was = 'arcanum_add'
 
             case 'spell reach':
                 self.reach_mods.append(line_text)
+                self.last_line_was = 'spell_reach'
 
     def write_to_file(self, out):
         data = {}
